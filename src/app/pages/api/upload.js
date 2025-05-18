@@ -4,6 +4,7 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { extractTextFromFile } from '../../../utils/textExtraction';
 import { generateFlashcardsWithLLM } from '../../../utils/llm';
+import dynamo from '../../../utils/dynamo';
 
 // Disable the default body parser to handle file uploads
 export const config = {
@@ -54,6 +55,17 @@ export default async function handler(req, res) {
 
     // --- Generate flashcards using an open-source LLM ---
     const flashcards = await generateFlashcardsWithLLM(extractedText);
+
+    // --- Save flashcards to DynamoDB ---
+    await dynamo.put({
+      TableName: 'Flashcards',
+      Item: {
+        documentId,
+        fileName,
+        flashcards,
+        createdAt: new Date().toISOString(),
+      }
+    }).promise();
 
     return res.status(200).json({ success: true, documentId, flashcards });
   } catch (error) {

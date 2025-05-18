@@ -1,0 +1,63 @@
+import formidable from 'formidable';
+import fs from 'fs';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import { extractTextFromFile } from '../../../utils/textExtraction';
+import { generateFlashcardsWithLLM } from '../../../utils/llm';
+
+// Disable the default body parser to handle file uploads
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    // Parse form with uploaded files
+    const form = new formidable.IncomingForm({
+      uploadDir: path.join(process.cwd(), 'tmp'),
+      keepExtensions: true,
+      multiples: true,
+    });
+
+    // Ensure upload directory exists
+    const uploadDir = path.join(process.cwd(), 'tmp');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    // Parse the form and get files
+    const [fields, files] = await new Promise((resolve, reject) => {
+      form.parse(req, (err, fields, files) => {
+        if (err) reject(err);
+        resolve([fields, files]);
+      });
+    });
+
+    // Handle multiple files
+    const uploadedFiles = Array.isArray(files.files) ? files.files : [files.files];
+    
+    // For simplicity, only process the first file
+    const file = uploadedFiles[0];
+    const documentId = uuidv4();
+    const filePath = file.filepath;
+    const fileType = file.mimetype;
+    const fileName = file.originalFilename;
+
+    // --- Extract text from the uploaded file ---
+    const extractedText = await extractTextFromFile(filePath, fileType);
+
+    // --- Generate flashcards using an open-source LLM ---
+    const flashcards = await generateFlashcardsWithLLM(extractedText);
+
+    return res.status(200).json({ success: true, documentId, flashcards });
+  } catch (error) {
+    console.error('Upload error:', error);
+    return res.status(500).json({ error: 'Failed to process upload' });
+  }
+}

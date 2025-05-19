@@ -1,4 +1,4 @@
-import { generateSuggestionsWithLLM } from '../../../utils/llm';
+import { generateSuggestionsWithLLM } from '../../utils/llm';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {

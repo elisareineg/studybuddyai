@@ -1,33 +1,45 @@
-"use client";
-import React, { useState } from 'react';
+import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-export default function DropzoneUpload({ onFileUpload }) {
-  const [loading, setLoading] = useState(false);
-
-  const onDrop = React.useCallback(async (acceptedFiles) => {
-    if (acceptedFiles && acceptedFiles.length > 0) {
-      setLoading(true);
-      await onFileUpload(acceptedFiles[0]);
-      setLoading(false);
+export default function DropzoneUpload({ onFileUpload, isProcessing = false }) {
+  const onDrop = useCallback((acceptedFiles) => {
+    if (acceptedFiles?.[0] && !isProcessing) {
+      onFileUpload(acceptedFiles[0]);
     }
-  }, [onFileUpload]);
+  }, [onFileUpload, isProcessing]);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, disabled: loading });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'application/pdf': ['.pdf'],
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+      'text/plain': ['.txt'],
+    },
+    disabled: isProcessing,
+    maxFiles: 1,
+  });
 
   return (
-    <div
-      {...getRootProps()}
-      className={`border-2 border-dashed border-blue-400 rounded-lg p-8 w-full max-w-xl text-center cursor-pointer bg-white hover:bg-blue-50 transition ${loading ? 'opacity-50 pointer-events-none' : ''}`}
+    <div 
+      {...getRootProps()} 
+      className={`w-full max-w-xl p-8 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors ${
+        isDragActive ? 'border-white bg-blue-400/30' : 'border-white/50 hover:border-white'
+      } ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
-      <input {...getInputProps()} disabled={loading} />
-      {loading ? (
-        <p className="text-blue-600 animate-pulse">Uploading and generating flashcards...</p>
+      <input {...getInputProps()} />
+      {isProcessing ? (
+        <div className="flex flex-col items-center justify-center">
+          <div className="h-12 w-12 border-4 border-t-white border-r-transparent border-b-white border-l-transparent rounded-full animate-spin mb-4"></div>
+          <p>Processing your document...</p>
+        </div>
       ) : isDragActive ? (
-        <p className="text-blue-600">Drop the file here ...</p>
+        <p className="text-lg">Drop your file here...</p>
       ) : (
-        <p className="text-gray-600">Drag & drop your course notes here, or click to select a file</p>
+        <div>
+          <p className="text-lg mb-2">Drag & drop your course notes here, or click to select a file</p>
+          <p className="text-sm text-white/70">Supports PDF, DOCX, and TXT files</p>
+        </div>
       )}
     </div>
   );
-} 
+}

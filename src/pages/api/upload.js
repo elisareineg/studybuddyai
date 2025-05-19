@@ -2,9 +2,9 @@ import formidable from 'formidable';
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { extractTextFromFile } from '../../../utils/textExtraction';
-import { generateFlashcardsWithLLM } from '../../../utils/llm';
-import dynamo from '../../../utils/dynamo';
+import { extractTextFromFile } from '../../utils/textExtraction';
+import { generateFlashcardsWithLLM } from '../../utils/llm';
+import dynamo from '../../utils/dynamo';
 
 // Disable the default body parser to handle file uploads
 export const config = {
@@ -51,7 +51,12 @@ export default async function handler(req, res) {
     const fileName = file.originalFilename;
 
     // --- Extract text from the uploaded file ---
-    const extractedText = await extractTextFromFile(filePath, fileType);
+    let extractedText;
+    try {
+      extractedText = await extractTextFromFile(filePath, fileType);
+    } catch (err) {
+      return res.status(400).json({ error: err.message });
+    }
 
     // --- Generate flashcards using an open-source LLM ---
     const flashcards = await generateFlashcardsWithLLM(extractedText);

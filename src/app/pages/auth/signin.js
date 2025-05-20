@@ -60,7 +60,7 @@ export default function SignIn() {
         <button
           onClick={handleGoogleSignIn}
           disabled={loading}
-          className="w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-medium mb-4 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-70"
+          className="w-full bg-white border border-gray-300 text-black py-3 px-4 rounded-lg font-medium mb-4 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-70"
         >
           <FcGoogle className="mr-2 text-xl" />
           <span>Sign in with Google</span>

@@ -1,4 +1,4 @@
-import formidable from 'formidable';
+import { IncomingForm } from 'formidable';
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
   try {
     // Parse form with uploaded files
-    const form = new formidable.IncomingForm({
+    const form = new IncomingForm({
       uploadDir: path.join(process.cwd(), 'tmp'),
       keepExtensions: true,
       multiples: true,

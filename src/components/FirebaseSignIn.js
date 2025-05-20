@@ -13,7 +13,7 @@ import {
 } from "firebase/auth";
 
 const actionCodeSettings = {
-  url: "http://localhost:3000/studybuddy", // Change to your production URL when deploying
+  url: process.env.NEXT_PUBLIC_FIREBASE_REDIRECT_URL || "https://studybuddyai-five.vercel.app/studybuddy",
   handleCodeInApp: true,
 };
 

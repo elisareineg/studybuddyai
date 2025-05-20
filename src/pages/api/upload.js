@@ -21,16 +21,16 @@ export default async function handler(req, res) {
   try {
     // Parse form with uploaded files
     const form = new IncomingForm({
-      uploadDir: path.join(process.cwd(), 'tmp'),
+      uploadDir: '/tmp',
       keepExtensions: true,
       multiples: true,
     });
 
-    // Ensure upload directory exists
-    const uploadDir = path.join(process.cwd(), 'tmp');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
+    // No need to create /tmp directory on Vercel
+    // const uploadDir = path.join(process.cwd(), 'tmp');
+    // if (!fs.existsSync(uploadDir)) {
+    //   fs.mkdirSync(uploadDir, { recursive: true });
+    // }
 
     // Parse the form and get files
     const [fields, files] = await new Promise((resolve, reject) => {

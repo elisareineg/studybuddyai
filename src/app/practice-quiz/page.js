@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 // Fallback sample flashcards
@@ -36,7 +36,7 @@ function generateOptions(flashcards) {
   });
 }
 
-export default function PracticeQuizPage() {
+function PracticeQuizPageInner() {
   const searchParams = useSearchParams();
   const flashcardsParam = searchParams.get("flashcards");
   let parsed = null;
@@ -214,5 +214,13 @@ export default function PracticeQuizPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function PracticeQuizPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PracticeQuizPageInner />
+    </Suspense>
   );
 } 

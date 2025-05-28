@@ -10,6 +10,7 @@ import {
   sendSignInLinkToEmail,
   isSignInWithEmailLink,
   signInWithEmailLink,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 
 const actionCodeSettings = {
@@ -121,6 +122,7 @@ export default function FirebaseSignIn({ onSignIn }) {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [showSignUp, setShowSignUp] = useState(false);
+  const [resetMode, setResetMode] = useState(false);
 
   // Handle email link sign-in on page load
   useEffect(() => {
@@ -176,6 +178,22 @@ export default function FirebaseSignIn({ onSignIn }) {
     }
   };
 
+  const handleForgotPassword = async (e) => {
+    e && e.preventDefault();
+    setError("");
+    setMessage("");
+    if (!email) {
+      setError("Please enter your email address.");
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setMessage("Password reset email sent! Check your inbox.");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-200 via-blue-300 to-blue-500 relative">
       <BookshelfBackground />
@@ -206,7 +224,7 @@ export default function FirebaseSignIn({ onSignIn }) {
               Email Link
             </button>
           </div>
-          {mode === "password" ? (
+          {mode === "password" && !resetMode ? (
             <form onSubmit={handleEmailPasswordSignIn} className="flex flex-col gap-2 w-full">
               <label className="text-xs font-semibold text-gray-600 mt-2">EMAIL ADDRESS</label>
               <input
@@ -226,6 +244,9 @@ export default function FirebaseSignIn({ onSignIn }) {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+              <button type="button" className="text-xs text-blue-600 hover:underline text-left mt-1 mb-2" onClick={() => setResetMode(true)}>
+                Forgot password?
+              </button>
               <button
                 type="submit"
                 className="w-full bg-gray-100 hover:bg-blue-100 text-gray-800 py-2 rounded font-semibold mt-2 border border-gray-200 transition btn-shine"
@@ -233,7 +254,34 @@ export default function FirebaseSignIn({ onSignIn }) {
                 Sign in
               </button>
             </form>
-          ) : (
+          ) : null}
+          {mode === "password" && resetMode && (
+            <form onSubmit={handleForgotPassword} className="flex flex-col gap-2 w-full">
+              <label className="text-xs font-semibold text-gray-600 mt-2">EMAIL ADDRESS</label>
+              <input
+                type="email"
+                placeholder="user@acme.com"
+                className="border p-2 rounded"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-2 rounded font-semibold mt-2 border border-blue-700 transition btn-shine"
+              >
+                Send Password Reset Email
+              </button>
+              <button
+                type="button"
+                className="w-full bg-gray-100 text-gray-800 py-2 rounded font-semibold mt-2 border border-gray-200 hover:bg-blue-100"
+                onClick={() => { setResetMode(false); setError(""); setMessage(""); }}
+              >
+                Back to Sign In
+              </button>
+            </form>
+          )}
+          {mode === "link" && (
             <form onSubmit={handleSendLink} className="flex flex-col gap-2 w-full">
               <label className="text-xs font-semibold text-gray-600 mt-2">EMAIL ADDRESS</label>
               <input

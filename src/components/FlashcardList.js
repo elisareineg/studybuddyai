@@ -9,7 +9,7 @@ export default function FlashcardList({ flashcards, isGenerating }) {
   }, [flashcards]);
 
   if (!flashcards || flashcards.length === 0) {
-    return <div className="text-gray-500 text-center">{isGenerating ? 'Flashcards Generating..' : 'No flashcards generated yet.'}</div>;
+    return <div className="text-gray-500 text-center">No flashcards generated yet.</div>;
   }
 
   const handleFlip = idx => {

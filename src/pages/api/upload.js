@@ -50,12 +50,25 @@ export default async function handler(req, res) {
     const fileType = file.mimetype;
     const fileName = file.originalFilename;
 
+    // --- Detailed logging ---
+    console.log('Upload received:', { filePath, fileType, fileName });
+    try {
+      if (!fs.existsSync(filePath)) {
+        console.error('File does not exist at path:', filePath);
+        return res.status(500).json({ error: `File does not exist at path: ${filePath}` });
+      }
+    } catch (fsErr) {
+      console.error('File existence check error:', fsErr);
+      return res.status(500).json({ error: `File existence check error: ${fsErr.message}` });
+    }
+
     // --- Extract text from the uploaded file ---
     let extractedText;
     try {
       extractedText = await extractTextFromFile(filePath, fileType);
     } catch (err) {
-      return res.status(400).json({ error: err.message });
+      console.error('Text extraction error:', err);
+      return res.status(400).json({ error: err.message, stack: err.stack });
     }
 
     // --- Generate flashcards using an open-source LLM ---
@@ -74,7 +87,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ success: true, documentId, flashcards });
   } catch (error) {
-    console.error('Upload error:', error);
-    return res.status(500).json({ error: 'Failed to process upload' });
+    console.error('Upload error:', error, error?.stack);
+    return res.status(500).json({ error: 'Failed to process upload', stack: error?.stack });
   }
 }

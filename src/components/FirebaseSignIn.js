@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { auth } from "../firebase";
-import BooksBackground from "./BooksBackground";
+import BookshelfBackground from "./BookshelfBackground";
 import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
@@ -38,8 +38,8 @@ function SignUpModal({ open, onClose }) {
   };
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center" style={{background: 'linear-gradient(135deg, #c2e9fb 0%, #81a4fd 100%)'}}>
-      <BooksBackground />
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <BookshelfBackground />
       <div className="bg-white bg-opacity-80 backdrop-blur-md rounded-2xl shadow-2xl border border-blue-100 p-8 w-full max-w-md relative flex flex-col items-center">
         <button onClick={onClose} className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
         <h2 className="text-2xl font-bold mb-2 text-gray-900 text-center">Sign Up</h2>
@@ -48,7 +48,7 @@ function SignUpModal({ open, onClose }) {
           <label className="text-xs font-semibold text-gray-600 mt-2">EMAIL ADDRESS</label>
           <input type="email" placeholder="user@acme.com" className="border p-2 rounded" value={email} onChange={e => setEmail(e.target.value)} required />
           <label className="text-xs font-semibold text-gray-600 mt-2">PASSWORD</label>
-          <input type="password" placeholder="Password" className="border p-2 rounded" value={password} onChange={e => setPassword(e.target.value)} required />
+          <input type="password" placeholder="Password" className="border p-2 rounded text-black" value={password} onChange={e => setPassword(e.target.value)} required />
           <button type="submit" className="w-full bg-gray-100 hover:bg-blue-100 text-gray-800 py-2 rounded font-semibold mt-2 border border-gray-200 transition btn-shine">Sign up</button>
         </form>
         {success && <div className="text-green-600 mt-2">{success}</div>}
@@ -178,7 +178,7 @@ export default function FirebaseSignIn({ onSignIn }) {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-200 via-blue-300 to-blue-500 relative">
-      <BooksBackground />
+      <BookshelfBackground />
       <h1 className="text-5xl md:text-6xl font-extrabold mb-2 mt-8 drop-shadow-lg text-white text-center">Study Buddy AI</h1>
       <p className="mb-8 text-lg md:text-2xl font-medium text-white/90 text-center max-w-xl mx-auto">Your #1 AI Powered Studying Tool For Exams</p>
       <div className="flex flex-col md:flex-row items-center justify-center w-full z-10">
@@ -221,7 +221,7 @@ export default function FirebaseSignIn({ onSignIn }) {
               <input
                 type="password"
                 placeholder="Password"
-                className="border p-2 rounded"
+                className="border p-2 rounded text-black"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required

@@ -15,6 +15,7 @@ export default function StudyBuddyPage() {
   const [quizResults, setQuizResults] = useState(null);
   const [suggestions, setSuggestions] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -35,6 +36,7 @@ export default function StudyBuddyPage() {
   // Handle file upload and get flashcards from backend
   const handleFileUpload = async (file) => {
     setUploadedFile(file);
+    setIsGenerating(true);
     const formData = new FormData();
     formData.append('files', file);
     const res = await fetch('/api/upload', {
@@ -48,6 +50,7 @@ export default function StudyBuddyPage() {
       setFlashcards([]);
       alert(data.error || 'Failed to process file. Please upload a valid PDF, DOCX, or TXT file.');
     }
+    setIsGenerating(false);
   };
 
   // Handle quiz completion and get suggestions from backend
@@ -80,7 +83,7 @@ export default function StudyBuddyPage() {
         <DropzoneUpload onFileUpload={handleFileUpload} />
         {uploadedFile && (
           <div className="w-full max-w-2xl mt-8 mx-auto">
-            <FlashcardList flashcards={flashcards} />
+            <FlashcardList flashcards={flashcards} isGenerating={isGenerating} />
             <Quiz flashcards={flashcards} onComplete={handleQuizComplete} />
           </div>
         )}

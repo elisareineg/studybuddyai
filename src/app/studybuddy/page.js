@@ -7,7 +7,6 @@ import DropzoneUpload from '@/components/DropzoneUpload';
 import FlashcardList from '@/components/FlashcardList';
 import Quiz from '@/components/Quiz';
 import ImprovementSuggestions from '@/components/ImprovementSuggestions';
-import BookshelfBackground from "@/components/BookshelfBackground";
 
 export default function StudyBuddyPage() {
   const [user, setUser] = useState(null);
@@ -68,8 +67,7 @@ export default function StudyBuddyPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center text-white text-center relative">
-      <BookshelfBackground />
+    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-300 to-blue-400 flex flex-col items-center justify-center text-white text-center relative">
       <button
         onClick={() => { signOut(auth); setUser(null); }}
         className="absolute top-6 right-8 bg-white text-blue-700 px-4 py-2 rounded shadow font-semibold hover:bg-blue-100"

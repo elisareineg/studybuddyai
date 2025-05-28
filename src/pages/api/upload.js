@@ -78,7 +78,7 @@ export default async function handler(req, res) {
     await dynamo.put({
       TableName: 'Flashcards',
       Item: {
-        documentId,
+        documentID: documentId,
         fileName,
         flashcards,
         createdAt: new Date().toISOString(),

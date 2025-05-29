@@ -7,7 +7,7 @@ import DropzoneUpload from '@/components/DropzoneUpload';
 import FlashcardList from '@/components/FlashcardList';
 import Quiz from '@/components/Quiz';
 import ImprovementSuggestions from '@/components/ImprovementSuggestions';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { FiRefreshCw } from 'react-icons/fi';
 
 export default function StudyBuddyPage() {
@@ -24,7 +24,12 @@ export default function StudyBuddyPage() {
   const [helpForm, setHelpForm] = useState({ name: '', email: '', message: '' });
   const [helpStatus, setHelpStatus] = useState('');
   const [sessions, setSessions] = useState([]);
+  const [selectedSession, setSelectedSession] = useState(null);
+  const [showSessionModal, setShowSessionModal] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+  const [animatedText, setAnimatedText] = useState("");
+  const subtitle = "Select a study option to help ace your exams!";
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -41,12 +46,28 @@ export default function StudyBuddyPage() {
   }, []);
 
   // Save session to localStorage
-  const saveSession = (fileName, mode) => {
-    const newSession = { fileName, mode, date: new Date().toISOString() };
+  const saveSession = (fileName, mode, data) => {
+    const newSession = {
+      fileName,
+      mode,
+      date: new Date().toISOString(),
+      data, // flashcards or quizResults
+    };
     const updated = [newSession, ...sessions].slice(0, 20);
     setSessions(updated);
     localStorage.setItem('studybuddy_sessions', JSON.stringify(updated));
   };
+
+  useEffect(() => {
+    let i = 0;
+    setAnimatedText("");
+    const interval = setInterval(() => {
+      setAnimatedText(subtitle.slice(0, i + 1));
+      i++;
+      if (i === subtitle.length) clearInterval(interval);
+    }, 30);
+    return () => clearInterval(interval);
+  }, []);
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center text-white">Loading...</div>;
@@ -69,7 +90,9 @@ export default function StudyBuddyPage() {
     const data = await res.json();
     if (res.ok) {
       setFlashcards(data.flashcards || []);
-      saveSession(file.name, mode);
+      if (mode === 'questions') {
+        saveSession(file.name, mode, data.flashcards || []);
+      }
     } else {
       setFlashcards([]);
       alert(data.error || 'Failed to process file. Please upload a valid PDF, DOCX, or TXT file.');
@@ -88,49 +111,49 @@ export default function StudyBuddyPage() {
     if (res.ok) {
       const data = await res.json();
       setSuggestions(data.suggestions || []);
+      if (mode === 'quiz') {
+        saveSession(uploadedFile?.name || 'Quiz', mode, results);
+      }
     } else {
       setSuggestions([]);
     }
   };
 
+  const handleSessionClick = (session, idx) => {
+    router.push(`/review/${idx}`);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-300 to-blue-400 flex">
-      {/* Sidebar for previous sessions (placeholder) */}
-      <aside className="w-64 bg-white/70 text-blue-900 p-6 border-r border-blue-100 flex flex-col gap-4 justify-between">
-        <div>
-          <div className="font-bold text-lg mb-4">Previous Sessions</div>
-          {sessions.length === 0 ? (
-            <div className="text-sm text-blue-700/70">No previous sessions yet.</div>
-          ) : (
-            <ul className="text-sm space-y-2">
-              {sessions.map((s, i) => (
-                <li key={i} className="flex flex-col border-b border-blue-100 pb-2">
-                  <span className="font-semibold">{s.fileName}</span>
-                  <span className="text-blue-700/80">{s.mode === 'quiz' ? 'Practice Quiz' : 'Practice Questions'}</span>
-                  <span className="text-xs text-blue-400">{new Date(s.date).toLocaleString()}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <button
-          className="mt-8 px-6 py-2 bg-blue-200 text-blue-900 rounded-lg font-semibold hover:bg-blue-300"
-          onClick={() => setShowHelp(true)}
-        >
-          Help
-        </button>
-      </aside>
+    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-300 to-blue-400 flex relative">
       {/* Main content */}
-      <main className="flex-1 flex flex-col items-center justify-center text-center relative">
+      <main className="flex-1 flex flex-col items-center text-center relative pt-8">
         <button
           onClick={() => { signOut(auth); setUser(null); }}
           className="absolute top-6 right-8 bg-white text-blue-700 px-4 py-2 rounded shadow font-semibold hover:bg-blue-100"
         >
           Sign Out
         </button>
-        <h1 className="text-6xl font-extrabold mb-4 drop-shadow-lg">Study Buddy AI</h1>
+        <button
+          className="absolute top-20 right-8 bg-red-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-600 shadow"
+          onClick={() => setShowHelp(true)}
+        >
+          Help
+        </button>
+        {/* Only show Back to Dashboard if in questions or quiz mode */}
+        {(mode === 'questions' || mode === 'quiz') && (
+          <button
+            className="fixed top-6 left-8 bg-white text-blue-700 px-6 py-2 rounded-lg font-semibold hover:bg-blue-100 shadow z-50"
+            onClick={() => { window.location.href = '/studybuddy'; }}
+          >
+            Back to Dashboard
+          </button>
+        )}
+        <h1 className="text-6xl font-extrabold mb-2 drop-shadow-lg mt-0">Study Buddy AI</h1>
+        <div className="mb-8 text-md font-medium text-white/90 text-center max-w-xl mx-auto min-h-[32px]" style={{ fontSize: '1.25rem', marginTop: '3rem' }}>
+          {animatedText}<span className="animate-pulse text-blue-200">|</span>
+        </div>
         {!mode && (
-          <div className="flex flex-col gap-8 mt-8 w-full max-w-2xl">
+          <div className="flex flex-col gap-8 w-full max-w-2xl justify-center" style={{ minHeight: '30vh', marginTop: '2rem' }}>
             <div
               className="bg-white/80 rounded-xl shadow-lg p-8 cursor-pointer hover:bg-blue-50 border border-blue-100 transition"
               onClick={() => setMode('questions')}
@@ -173,7 +196,7 @@ export default function StudyBuddyPage() {
                     setFlashcards(data.flashcards || []);
                     setNotification('New questions generated!');
                     setTimeout(() => setNotification(''), 2500);
-                    saveSession(uploadedFile.name, mode);
+                    saveSession(uploadedFile.name, mode, data.flashcards || []);
                   } else {
                     setFlashcards([]);
                     alert(data.error || 'Failed to process file. Please upload a valid PDF, DOCX, or TXT file.');
@@ -199,12 +222,6 @@ export default function StudyBuddyPage() {
                 {notification}
               </div>
             )}
-            <button
-              className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
-              onClick={() => setMode(null)}
-            >
-              Back to Dashboard
-            </button>
           </div>
         )}
         {/* Practice Quiz Mode */}
@@ -224,7 +241,7 @@ export default function StudyBuddyPage() {
                     onClick={() => {
                       if (flashcards.length > 0) {
                         router.push(`/practice-quiz?flashcards=${encodeURIComponent(JSON.stringify(flashcards))}`);
-                        saveSession(uploadedFile.name, mode);
+                        saveSession(uploadedFile.name, mode, null);
                       } else {
                         alert('Failed to generate flashcards. Please try again.');
                       }
@@ -240,12 +257,6 @@ export default function StudyBuddyPage() {
                 {notification}
               </div>
             )}
-            <button
-              className="mt-8 px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
-              onClick={() => setMode(null)}
-            >
-              Back to Dashboard
-            </button>
           </div>
         )}
         {quizResults && (
@@ -284,6 +295,48 @@ export default function StudyBuddyPage() {
               <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700">Send</button>
               {helpStatus && <div className="mt-3 text-center text-blue-700 font-semibold">{helpStatus}</div>}
             </form>
+          </div>
+        </div>
+      )}
+      {/* Session Review Modal */}
+      {showSessionModal && selectedSession && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-2xl relative border-2 border-blue-200">
+            <button className="absolute top-2 right-2 text-blue-700 font-bold text-xl" onClick={() => setShowSessionModal(false)}>&times;</button>
+            <h2 className="text-2xl font-bold mb-4 text-blue-700">Session Review</h2>
+            <div className="mb-4 text-blue-800 font-semibold">{selectedSession.fileName} ({selectedSession.mode === 'quiz' ? 'Practice Quiz' : 'Practice Questions'})</div>
+            <div className="text-blue-900 max-h-[60vh] overflow-y-auto">
+              {selectedSession.mode === 'questions' && Array.isArray(selectedSession.data) && (
+                <ul className="space-y-4">
+                  {selectedSession.data.map((card, idx) => (
+                    <li key={idx} className="border-b border-blue-100 pb-2">
+                      <div className="font-bold text-blue-800">Q: {card.question}</div>
+                      <div className="text-blue-700 mt-1">A: {card.answer}</div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {selectedSession.mode === 'quiz' && selectedSession.data && (
+                <ul className="space-y-6">
+                  {selectedSession.data.questions?.map((q, idx) => (
+                    <li key={idx} className="border-b border-blue-100 pb-2">
+                      <div className="font-bold text-blue-800 mb-1">Q{idx + 1}: {q.question}</div>
+                      <div className="text-blue-700">Your answer: <span className={q.correct ? 'text-green-600' : 'text-red-600'}>{q.userAnswer}</span></div>
+                      {!q.correct && (
+                        <div className="text-blue-700">Correct answer: <span className="text-green-700">{q.correctAnswer}</span></div>
+                      )}
+                      {q.explanation && (
+                        <div className="text-blue-500 text-sm mt-1">Explanation: {q.explanation}</div>
+                      )}
+                      <div className={q.correct ? 'text-green-600 font-semibold mt-1' : 'text-red-600 font-semibold mt-1'}>
+                        {q.correct ? 'Correct' : 'Incorrect'}
+                      </div>
+                    </li>
+                  ))}
+                  <li className="mt-4 font-bold text-blue-900">Score: {selectedSession.data.score} / {selectedSession.data.questions?.length}</li>
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       )}

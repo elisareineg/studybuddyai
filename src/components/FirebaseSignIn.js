@@ -47,7 +47,7 @@ function SignUpModal({ open, onClose }) {
         <p className="text-gray-500 mb-6 text-center">Create your free account</p>
         <form className="flex flex-col gap-3 w-full" onSubmit={handleSignUp}>
           <label className="text-xs font-semibold text-gray-600 mt-2">EMAIL ADDRESS</label>
-          <input type="email" placeholder="user@acme.com" className="border p-2 rounded" value={email} onChange={e => setEmail(e.target.value)} required />
+          <input type="email" placeholder="user@acme.com" className="border p-2 rounded text-black" value={email} onChange={e => setEmail(e.target.value)} required />
           <label className="text-xs font-semibold text-gray-600 mt-2">PASSWORD</label>
           <input type="password" placeholder="Password" className="border p-2 rounded text-black" value={password} onChange={e => setPassword(e.target.value)} required />
           <button type="submit" className="w-full bg-gray-100 hover:bg-blue-100 text-gray-800 py-2 rounded font-semibold mt-2 border border-gray-200 transition btn-shine">Sign up</button>
@@ -115,6 +115,29 @@ function AnimatedPaper() {
   );
 }
 
+// Helper to map Firebase error codes to user-friendly messages
+function getFriendlyErrorMessage(error) {
+  if (!error?.code && typeof error === 'string') return error;
+  switch (error.code) {
+    case 'auth/user-not-found':
+      return 'No account found with that email address.';
+    case 'auth/wrong-password':
+      return 'Incorrect password. Please try again.';
+    case 'auth/invalid-email':
+      return 'Please enter a valid email address.';
+    case 'auth/email-already-in-use':
+      return 'An account with this email already exists.';
+    case 'auth/weak-password':
+      return 'Password should be at least 6 characters.';
+    case 'auth/invalid-credential':
+      return 'Incorrect email or password.';
+    case 'auth/too-many-requests':
+      return 'Too many failed attempts. Please try again later or reset your password.';
+    default:
+      return error.message || 'An unknown error occurred.';
+  }
+}
+
 export default function FirebaseSignIn({ onSignIn }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -149,6 +172,7 @@ export default function FirebaseSignIn({ onSignIn }) {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       onSignIn && onSignIn(userCredential.user);
+      window.location.href = "/studybuddy";
     } catch (err) {
       setError(err.message);
     }
@@ -160,6 +184,7 @@ export default function FirebaseSignIn({ onSignIn }) {
       const provider = new GoogleAuthProvider();
       const userCredential = await signInWithPopup(auth, provider);
       onSignIn && onSignIn(userCredential.user);
+      window.location.href = "/studybuddy";
     } catch (err) {
       setError(err.message);
     }
@@ -230,7 +255,7 @@ export default function FirebaseSignIn({ onSignIn }) {
               <input
                 type="email"
                 placeholder="user@acme.com"
-                className="border p-2 rounded"
+                className="border p-2 rounded text-black"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -261,7 +286,7 @@ export default function FirebaseSignIn({ onSignIn }) {
               <input
                 type="email"
                 placeholder="user@acme.com"
-                className="border p-2 rounded"
+                className="border p-2 rounded text-black"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -287,7 +312,7 @@ export default function FirebaseSignIn({ onSignIn }) {
               <input
                 type="email"
                 placeholder="user@acme.com"
-                className="border p-2 rounded"
+                className="border p-2 rounded text-black"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -301,7 +326,7 @@ export default function FirebaseSignIn({ onSignIn }) {
             </form>
           )}
           {message && <div className="text-green-600 mt-2">{message}</div>}
-          {error && <div className="text-red-500 mt-2">{error}</div>}
+          {error && <div className="text-red-500 mt-2">{getFriendlyErrorMessage(error)}</div>}
           <div className="mt-6 text-center text-gray-500 text-sm">
             Don&apos;t have an account? <button onClick={() => setShowSignUp(true)} className="text-blue-600 font-semibold hover:underline">Sign up for free.</button>
           </div>

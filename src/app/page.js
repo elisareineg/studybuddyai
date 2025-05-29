@@ -75,7 +75,7 @@ export default function HomePage() {
       >
         Sign Out
       </button>
-      <h1 className="text-6xl font-extrabold mb-4 drop-shadow-lg">Study Buddy AI</h1>
+      <h1 className="text-4xl md:text-5xl font-extrabold mb-4 mt-8 drop-shadow-lg">Study Buddy AI</h1>
       <p className="mb-8 text-lg font-medium text-white/90 text-center max-w-xl mx-auto">Drop your notes below to generate questions and feedback to ace your exams!</p>
       <div className="flex flex-col items-center w-full">
         <DropzoneUpload onFileUpload={handleFileUpload} />

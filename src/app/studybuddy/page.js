@@ -149,9 +149,12 @@ export default function StudyBuddyPage() {
           </button>
         )}
         <h1 className="text-6xl font-extrabold mb-2 drop-shadow-lg mt-0">Study Buddy AI</h1>
-        <div className="mb-8 text-md font-medium text-white/90 text-center max-w-xl mx-auto min-h-[32px]" style={{ fontSize: '1.25rem', marginTop: '3rem' }}>
-          {animatedText}<span className="animate-pulse text-blue-200">|</span>
-        </div>
+        {/* Subtitle only visible when not in a mode */}
+        {!mode && (
+          <div className="mb-8 text-md font-medium text-white/90 text-center max-w-xl mx-auto min-h-[32px]" style={{ fontSize: '1.25rem', marginTop: '3rem' }}>
+            {animatedText}<span className="animate-pulse text-blue-200">|</span>
+          </div>
+        )}
         {!mode && (
           <div className="flex flex-col gap-8 w-full max-w-2xl justify-center" style={{ minHeight: '30vh', marginTop: '2rem' }}>
             <div

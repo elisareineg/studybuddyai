@@ -1,0 +1,53 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#4F46E5" opacity="0.1" stroke="#4F46E5" stroke-width="2"/>
+  
+  <!-- Robot head -->
+  <rect x="70" y="60" width="60" height="50" rx="15" fill="#6366F1" stroke="#4F46E5" stroke-width="2"/>
+  
+  <!-- Eyes -->
+  <circle cx="85" cy="80" r="6" fill="#FFFFFF"/>
+  <circle cx="115" cy="80" r="6" fill="#FFFFFF"/>
+  <circle cx="85" cy="80" r="3" fill="#4F46E5"/>
+  <circle cx="115" cy="80" r="3" fill="#4F46E5"/>
+  
+  <!-- Friendly smile -->
+  <path d="M 90 95 Q 100 102 110 95" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round"/>
+  
+  <!-- Antenna with signal waves -->
+  <line x1="100" y1="60" x2="100" y2="45" stroke="#4F46E5" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="100" cy="45" r="3" fill="#10B981"/>
+  
+  <!-- Signal waves -->
+  <path d="M 95 50 Q 100 45 105 50" stroke="#10B981" stroke-width="2" fill="none" opacity="0.7"/>
+  <path d="M 92 52 Q 100 42 108 52" stroke="#10B981" stroke-width="2" fill="none" opacity="0.5"/>
+  
+  <!-- Robot body -->
+  <rect x="75" y="110" width="50" height="40" rx="8" fill="#8B5CF6" stroke="#7C3AED" stroke-width="2"/>
+  
+  <!-- Control panel -->
+  <rect x="85" y="120" width="30" height="20" rx="3" fill="#FFFFFF" opacity="0.9"/>
+  <rect x="88" y="123" width="8" height="3" rx="1" fill="#4F46E5"/>
+  <rect x="88" y="128" width="12" height="3" rx="1" fill="#10B981"/>
+  <rect x="88" y="133" width="6" height="3" rx="1" fill="#F59E0B"/>
+  <circle cx="110" cy="130" r="4" fill="#EF4444" opacity="0.8"/>
+  
+  <!-- Arms -->
+  <rect x="55" y="115" width="20" height="8" rx="4" fill="#8B5CF6" stroke="#7C3AED" stroke-width="2"/>
+  <rect x="125" y="115" width="20" height="8" rx="4" fill="#8B5CF6" stroke="#7C3AED" stroke-width="2"/>
+  
+  <!-- Hands holding study items -->
+  <!-- Left hand with book -->
+  <rect x="48" y="118" width="12" height="8" rx="2" fill="#F97316"/>
+  <line x1="50" y1="120" x2="58" y2="120" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="50" y1="122" x2="58" y2="122" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="50" y1="124" x2="58" y2="124" stroke="#FFFFFF" stroke-width="1"/>
+  
+  <!-- Right hand with pencil -->
+  <rect x="145" y="118" width="2" height="12" rx="1" fill="#F59E0B"/>
+  <polygon points="145,116 147,116 146,118" fill="#EC4899"/>
+  
+  <!-- Base/wheels -->
+  <circle cx="85" cy="160" r="8" fill="#6B7280" stroke="#4B5563" stroke-width="2"/>
+  <circle cx="115" cy="160" r="8" fill="#6B7280" stroke="#4B5563" stroke-width="2"/>
+</svg> 

@@ -45,7 +45,7 @@ export default function FlashcardList({ flashcards, isGenerating }) {
       {flashcards.map((card, idx) => (
         <div key={idx} className="flex justify-center">
           <div
-            className="flip-card w-full max-w-2xl h-40 cursor-pointer"
+            className="flip-card w-full max-w-3xl h-28 cursor-pointer"
             onClick={() => handleFlip(idx)}
           >
             <div className={`flip-inner w-full h-full ${flipped[idx] ? 'flipped' : ''}`}>

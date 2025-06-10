@@ -9,6 +9,7 @@ import Quiz from '@/components/Quiz';
 import ImprovementSuggestions from '@/components/ImprovementSuggestions';
 import { useRouter, usePathname } from 'next/navigation';
 import { FiRefreshCw } from 'react-icons/fi';
+import BookshelfBackground from '@/components/BookshelfBackground';
 
 export default function StudyBuddyPage() {
   const [user, setUser] = useState(null);
@@ -124,9 +125,10 @@ export default function StudyBuddyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-300 to-blue-400 flex relative">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-200 via-blue-300 to-blue-500 relative">
+      <BookshelfBackground />
       {/* Main content */}
-      <main className="flex-1 flex flex-col items-center text-center relative pt-8">
+      <main className="flex-1 flex flex-col items-center text-center relative pt-8 w-full px-4">
         <button
           onClick={() => { signOut(auth); setUser(null); }}
           className="absolute top-6 right-8 bg-white text-blue-700 px-4 py-2 rounded shadow font-semibold hover:bg-blue-100"

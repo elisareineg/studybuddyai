@@ -11,6 +11,8 @@ import {
   isSignInWithEmailLink,
   signInWithEmailLink,
   sendPasswordResetEmail,
+  signInWithRedirect,
+  getRedirectResult,
 } from "firebase/auth";
 
 const actionCodeSettings = {
@@ -182,13 +184,37 @@ export default function FirebaseSignIn({ onSignIn }) {
     setError("");
     try {
       const provider = new GoogleAuthProvider();
-      const userCredential = await signInWithPopup(auth, provider);
-      onSignIn && onSignIn(userCredential.user);
-      window.location.href = "/studybuddy";
+      // Use redirect instead of popup for mobile devices
+      if (window.innerWidth <= 768) {
+        await signInWithRedirect(auth, provider);
+      } else {
+        const userCredential = await signInWithPopup(auth, provider);
+        onSignIn && onSignIn(userCredential.user);
+        window.location.href = "/studybuddy";
+      }
     } catch (err) {
-      setError(err.message);
+      console.error("Google sign-in error:", err);
+      setError(getFriendlyErrorMessage(err));
     }
   };
+
+  // Add redirect result handler
+  useEffect(() => {
+    const handleRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result?.user) {
+          onSignIn && onSignIn(result.user);
+          window.location.href = "/studybuddy";
+        }
+      } catch (err) {
+        console.error("Redirect result error:", err);
+        setError(getFriendlyErrorMessage(err));
+      }
+    };
+    
+    handleRedirectResult();
+  }, [onSignIn]);
 
   const handleSendLink = async (e) => {
     e.preventDefault();
@@ -230,10 +256,10 @@ export default function FirebaseSignIn({ onSignIn }) {
           <p className="text-gray-500 mb-6 text-center">Use your email and password to sign in</p>
           <button
             onClick={handleGoogleSignIn}
-            className="w-full flex items-center justify-center gap-2 btn-shine text-black py-2 rounded font-semibold mb-4 transition shadow"
+            className="w-full flex items-center justify-center gap-2 btn-shine text-black py-3 px-4 rounded-lg font-medium mb-4 transition shadow hover:bg-gray-50"
           >
             <FcGoogle className="text-2xl" />
-            Sign in with Google
+            <span>Sign in with Google</span>
           </button>
           <div className="flex justify-center mb-4 w-full">
             <button

@@ -1,5 +1,23 @@
 export async function generateFlashcardsWithLLM(text) {
-  const prompt = `\nGiven the following study notes, generate 5 quizlet-style flashcards as a JSON array with "question" and "answer" fields.\n\nNotes:\n${text}\n\nOutput only the JSON array.`;
+  const prompt = `You are a helpful study assistant. Given the following study notes, generate 5 quizlet-style flashcards as a JSON array with "question" and "answer" fields. The notes may be in any language - please maintain the same language in your questions and answers.
+
+Important guidelines:
+1. Keep the same language as the input text
+2. Generate clear, concise questions and answers
+3. Focus on key concepts and important details
+4. Ensure questions are specific and test understanding
+5. Format the output as a valid JSON array
+
+Notes:
+${text}
+
+Output only the JSON array in this format:
+[
+  {
+    "question": "Question in the same language as the notes",
+    "answer": "Answer in the same language as the notes"
+  }
+]`;
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',

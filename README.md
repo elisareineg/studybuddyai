@@ -1,3 +1,5 @@
+**You can access this web app at https://studybuddyai-five.vercel.app/studybuddy**
+
 Study Buddy AI is an AI-powered web application designed to help students study smarter. Upload your notes (PDF, DOCX, or TXT), and Study Buddy AI will automatically generate flashcards, quizzes, and personalized improvement suggestions—making exam prep easier and more effective. The app supports multiple languages, so you can study in English, French, Spanish, or any language your notes are written in.
 
 <img width="1447" alt="Screenshot 2025-06-10 at 3 02 40 PM" src="https://github.com/user-attachments/assets/2fcbcc65-73c6-431e-acce-08782a8ae796" />

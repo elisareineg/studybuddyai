@@ -30,12 +30,11 @@ Upload a file and select "Start Quiz" to select your quiz options.
 
 You can choose whether you'd like to add a timer to each question or not, as well as the number of questions. Currently this is capped at 5 due to the LLM, however I have plans to increase this.
 
-<img width="943" alt="Screenshot 2025-06-10 at 3 17 41 PM" src="https://github.com/user-attachments/assets/2bc3fa9f-" />
+<img width="943" alt="Screenshot 2025-06-10 at 3 17 41 PM" src="https://github.com/user-attachments/assets/2bc3fa9f-5340-4435-b3ce-e45be1ad0996" />
 
 Once you start the quiz, a timer should show in the top left corner. You can select a question and will be informed if you were correct or incorrect.
 
 <img width="1442" alt="Screenshot 2025-06-10 at 3 19 08 PM" src="https://github.com/user-attachments/assets/7784a6a7-2f4c-4ce7-813b-533cfaaffb4b" />
-5340-4435-b3ce-e45be1ad0996" />
 
 <img width="825" alt="Screenshot 2025-06-10 at 3 18 57 PM" src="https://github.com/user-attachments/assets/bc74a8f5-2cc3-4502-97d3-ac6b7a300d1c" />
 

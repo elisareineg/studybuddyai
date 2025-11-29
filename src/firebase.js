@@ -1,5 +1,5 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, connectAuthEmulator } from "firebase/auth";
+import { initializeApp, getApps } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import { getAnalytics, isSupported } from "firebase/analytics";
 
 const firebaseConfig = {
@@ -12,12 +12,16 @@ const firebaseConfig = {
   measurementId: "G-R6K7DTBWWK"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+// Initialize Firebase only if not already initialized
+let app;
+if (getApps().length === 0) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApps()[0];
+}
 
-// Configure auth persistence
-auth.setPersistence('local');
+// Initialize auth - safe to call on server, but only works on client
+export const auth = getAuth(app);
 
 // Only initialize analytics on the client and if supported
 export let analytics = null;

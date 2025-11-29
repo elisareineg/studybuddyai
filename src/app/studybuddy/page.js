@@ -150,7 +150,7 @@ export default function StudyBuddyPage() {
             Back to Dashboard
           </button>
         )}
-        <h1 className="text-6xl font-extrabold mb-2 drop-shadow-lg mt-0">Study Buddy AI</h1>
+        <h1 className="text-6xl font-extrabold mb-2 drop-shadow-lg mt-0 bg-gradient-to-r from-white via-blue-50 to-white bg-clip-text text-transparent">Study Buddy AI</h1>
         {/* Subtitle only visible when not in a mode */}
         {!mode && (
           <div className="mb-8 text-md font-medium text-white/90 text-center max-w-xl mx-auto min-h-[32px]" style={{ fontSize: '1.25rem', marginTop: '3rem' }}>

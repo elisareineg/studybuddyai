@@ -15,6 +15,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Study Buddy Ai",
   description: "AI-powered flashcards and feedback to help you study smarter.",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

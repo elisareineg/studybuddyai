@@ -1,5 +1,5 @@
 export async function generateFlashcardsWithLLM(text) {
-  const model = process.env.ANTHROPIC_MODEL || "claude-3-5-sonnet-latest";
+  const model = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-20250514";
   const apiKey = process.env.ANTHROPIC_API_KEY;
   const normalizedText = typeof text === "string" ? text.trim() : "";
 
